@@ -1,0 +1,11 @@
+.git
+.gitignore
+README.md
+*.md
+target/
+**/target/
+.idea/
+*.iml
+node_modules/          # once you add frontend
+frontend/node_modules/
+.DS_Store

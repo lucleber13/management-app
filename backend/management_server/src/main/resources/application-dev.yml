@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update  # Use update for development
+
+  flyway:
+    enabled: false  # Disable Flyway in development
+
+logging:
+  level:
+    com.cbcode: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

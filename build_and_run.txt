@@ -1,0 +1,154 @@
+## 🚀 Build & Run Commands
+
+### Development (Local)
+```bash
+# Start database only
+docker-compose up db -d
+
+# Run backend (from root directory)
+cd backend/management_server
+mvn spring-boot:run
+
+# Run frontend (separate terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+### Production (Docker)
+```bash
+# Build and start all services
+docker-compose up --build -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Remove volumes (clean slate)
+docker-compose down -v
+```
+
+## 🔍 Debugging Tips
+
+### Check Backend Connection to Database
+```bash
+docker-compose exec backend sh
+wget -qO- http://localhost:8080/actuator/health
+```
+
+### Check Database
+```bash
+docker-compose exec db psql -U postgres -d dealer_db
+# Run SQL: \dt to list tables
+```
+
+### Check Logs
+```bash
+# All services
+docker-compose logs
+
+# Specific service
+docker-compose logs backend -f
+docker-compose logs db -f
+```
+
+## ✅ Best Practices
+
+### 1. **Environment Variables**
+- Never commit secrets to Git
+- Use `.env` files for local development
+- Use Docker secrets/configs for production
+
+### 2. **Database Migrations**
+- Use Flyway for production
+- Keep migrations in `src/main/resources/db/migration`
+- Never modify existing migrations
+- Version format: `V1__initial_schema.sql`, `V2__add_users.sql`
+
+### 3. **API Design**
+- Use RESTful conventions
+- Version your API: `/api/v1/`
+- Return proper HTTP status codes
+- Use DTOs for request/response
+
+### 4. **Frontend Structure**
+```
+src/
+├── services/
+│   └── api.js          # Axios instance with interceptors
+│   └── userService.js  # API calls for users
+├── store/
+│   └── modules/        # Vuex modules (or Pinia stores)
+├── router/
+│   └── index.js        # Vue Router configuration
+└── components/
+    ├── common/         # Reusable components
+    └── features/       # Feature-specific components
+```
+
+### 5. **CORS Configuration** (Backend)
+```java
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:5173", "http://localhost:8081")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+}
+```
+
+### 6. **Health Check Endpoints**
+```java
+@RestController
+@RequestMapping("/api/v1")
+public class HealthController {
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> health() {
+        return ResponseEntity.ok(Map.of("status", "UP"));
+    }
+}
+```
+
+## 📝 Git Ignore Template
+```gitignore
+# Java
+target/
+*.jar
+*.class
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node
+node_modules/
+dist/
+.npm/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+```
