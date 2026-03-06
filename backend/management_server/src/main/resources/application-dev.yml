@@ -4,12 +4,14 @@ spring:
     hibernate:
       ddl-auto: update  # Use update for development
 
+
   flyway:
     enabled: false  # Disable Flyway in development
 
 logging:
   level:
-    com.cbcode: DEBUG
-    org.springframework.web: DEBUG
+    root: INFO
+    com.cbcode.management_server: DEBUG
+    org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
